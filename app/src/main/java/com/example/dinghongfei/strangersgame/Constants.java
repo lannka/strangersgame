@@ -33,6 +33,6 @@ class Constants {
     /**
      * Fixed namespace for this application.
      */
-    static final String NAMESPACE = "2f234454f4911ba9ffa6"; //"5A2989A38A4668B4E8AD";
+    static final String NAMESPACE = "2F234454F4911BA9FFA6"; //"5A2989A38A4668B4E8AD";
 }
 

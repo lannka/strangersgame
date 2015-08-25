@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
-import android.bluetooth.le.BluetoothLeAdvertiser;
+import android.bluetooth.le.AdvertiseCallback;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -12,15 +12,16 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class MainActivity extends Activity {
 
   private static final int REQUEST_ENABLE_BLUETOOTH = 1;
 
   private Scanner scanner;
+  private Advertiser advertiser;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +74,7 @@ public class MainActivity extends Activity {
           Log.d("MainActivity", instance_id);
         }
       }
-    });;
+    });
   }
 
   @Override
@@ -96,8 +97,15 @@ public class MainActivity extends Activity {
     } else if (!btAdapter.isMultipleAdvertisementSupported()) {
       showFinishingAlertDialog("Not supported", "BLE advertising not supported on this device");
     } else {
-      BluetoothLeAdvertiser adv = btAdapter.getBluetoothLeAdvertiser();
       scanner.Init(getApplicationContext(), new ArrayList<String>());
+      advertiser = new Advertiser(btAdapter.getBluetoothLeAdvertiser());
+      advertiser.startAdvertising(Constants.NAMESPACE, "112233445566", new AdvertiseCallback() {
+        @Override
+        public void onStartFailure(int errorCode) {
+          super.onStartFailure(errorCode);
+          showToast("startAdvertising failed with error " + errorCode);
+        }
+      });
     }
   }
 
@@ -112,5 +120,9 @@ public class MainActivity extends Activity {
             finish();
           }
         }).show();
+  }
+
+  private void showToast(String message) {
+    Toast.makeText(this, message, Toast.LENGTH_LONG).show();
   }
 }
