@@ -9,12 +9,18 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends Activity {
 
   private static final int REQUEST_ENABLE_BLUETOOTH = 1;
+
+  private Scanner scanner;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -57,11 +63,31 @@ public class MainActivity extends Activity {
     }
   }
 
+  @Override
+  public void onResume() {
+    super.onResume();
+    scanner.Start(new ScannerCallback() {
+      @Override
+      public void onDetected(ArrayList<String> instance_ids) {
+        for (String instance_id : instance_ids) {
+          Log.d("MainActivity", instance_id);
+        }
+      }
+    });;
+  }
+
+  @Override
+  public void onPause() {
+    super.onPause();
+    scanner.Stop();
+  }
+
   // Checks if Bluetooth advertising is supported on the device and requests enabling if necessary.
   private void init() {
     BluetoothManager manager = (BluetoothManager) getApplicationContext().getSystemService(
         Context.BLUETOOTH_SERVICE);
     BluetoothAdapter btAdapter = manager.getAdapter();
+    scanner = new Scanner();
     if (btAdapter == null) {
       showFinishingAlertDialog("Bluetooth Error", "Bluetooth not detected on device");
     } else if (!btAdapter.isEnabled()) {
@@ -71,6 +97,7 @@ public class MainActivity extends Activity {
       showFinishingAlertDialog("Not supported", "BLE advertising not supported on this device");
     } else {
       BluetoothLeAdvertiser adv = btAdapter.getBluetoothLeAdvertiser();
+      scanner.Init(getApplicationContext(), new ArrayList<String>());
     }
   }
 
