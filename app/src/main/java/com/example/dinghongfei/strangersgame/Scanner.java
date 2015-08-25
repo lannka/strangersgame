@@ -130,6 +130,13 @@ public class Scanner {
         }
     }
 
+    public void SetInstancesToTrack(ArrayList<String> instance_ids) {
+        instances_to_track.clear();
+        for (String id : instance_ids) {
+            instances_to_track.add(id);
+        }
+    }
+
     // Checks the frame type and hands off the service data to the validation module.
     private void validateServiceData(String deviceAddress, byte[] serviceData) {
         Beacon beacon = deviceToBeaconMap.get(deviceAddress);

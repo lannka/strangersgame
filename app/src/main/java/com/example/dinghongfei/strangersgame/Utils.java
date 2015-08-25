@@ -23,4 +23,7 @@ public class Utils {
         return true;
     }
 
+    static String toInstanceId(String id) {
+        return Integer.toHexString(id.hashCode()) + "0000";
+    }
 }

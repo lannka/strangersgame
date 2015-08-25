@@ -34,5 +34,10 @@ class Constants {
      * Fixed namespace for this application.
      */
     static final String NAMESPACE = "2F234454F4911BA9FFA6"; //"5A2989A38A4668B4E8AD";
+
+    /**
+     * Key for shared preference.
+     */
+    static final String SHARED_PREFERENCE = "SHARED_PREFERENCE";
 }
 

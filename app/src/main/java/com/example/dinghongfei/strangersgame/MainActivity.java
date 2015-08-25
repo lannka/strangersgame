@@ -5,13 +5,17 @@ import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
 import android.bluetooth.le.AdvertiseCallback;
+import android.bluetooth.le.AdvertiseSettings;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -22,12 +26,25 @@ public class MainActivity extends Activity {
 
   private Scanner scanner;
   private Advertiser advertiser;
+  private Button settings_button;
+  private String self_id;
+  private String self_base_id;
+  private String opponent_id;
+  private String opponent_base_id;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
     init();
+    settings_button = (Button)findViewById(R.id.settingsButton);
+    settings_button.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        Intent i = new Intent(MainActivity.this, SettingsActivity.class);
+        startActivityForResult(i, 0);
+      }
+    });
   }
 
   @Override
@@ -60,6 +77,45 @@ public class MainActivity extends Activity {
         init();
       } else {
         finish();
+      }
+    } else {
+      if (resultCode == Activity.RESULT_OK) {
+        SharedPreferences sharedPref = getSharedPreferences(Constants.SHARED_PREFERENCE, MODE_PRIVATE);
+        String text = sharedPref.getString(getString(R.string.self_instance_id), "");
+        self_id = Utils.toInstanceId(text);
+        text = sharedPref.getString(getString(R.string.self_base_instance_id), "");
+        self_base_id = Utils.toInstanceId(text);
+        text = sharedPref.getString(getString(R.string.opponent_instance_id), "");
+        opponent_id = Utils.toInstanceId(text);
+        text = sharedPref.getString(getString(R.string.opponent_base_instance_id), "");
+        opponent_base_id = Utils.toInstanceId(text);
+        if (scanner != null) {
+          ArrayList<String> instances_to_track = new ArrayList<>();
+          instances_to_track.add(self_base_id);
+          instances_to_track.add(opponent_id);
+          instances_to_track.add(opponent_base_id);
+          scanner.SetInstancesToTrack(instances_to_track);
+        }
+        if (advertiser != null) {
+          advertiser.stopAdvertising(new AdvertiseCallback() {
+            @Override
+            public void onStartSuccess(AdvertiseSettings settingsInEffect) {
+              super.onStartSuccess(settingsInEffect);
+              advertiser.startAdvertising(Constants.NAMESPACE, self_id, new AdvertiseCallback() {
+                @Override
+                public void onStartFailure(int errorCode) {
+                  super.onStartFailure(errorCode);
+                  showToast("startAdvertising failed with error " + errorCode);
+                }
+              });
+            }
+
+            @Override
+            public void onStartFailure(int errorCode) {
+              super.onStartFailure(errorCode);
+            }
+          });
+        }
       }
     }
   }
