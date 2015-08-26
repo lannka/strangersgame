@@ -12,7 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-public class SettingsActivity extends Activity {
+public class NewGameActivity extends Activity {
 
     private Button finish_button;
     private EditText self_instance_id_text;
@@ -40,21 +40,21 @@ public class SettingsActivity extends Activity {
         text = sharedPref.getString(getString(R.string.opponent_base_instance_id), "");
         opponent_base_instance_id_text.setText(text);
 
+        if (self_instance_id_text.getText().length() == 0) {
+          self_instance_id_text.setText("Myself");
+        }
+        if (self_base_instance_id_text.getText().length() == 0) {
+          self_base_instance_id_text.setText("MyBase");
+        }
+        if (opponent_instance_id_text.getText().length() == 0) {
+          opponent_instance_id_text.setText("EnemyA");
+        }
+        if (opponent_base_instance_id_text.getText().length() == 0) {
+          opponent_base_instance_id_text.setText("EnemyBase");
+        }
         finish_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (self_instance_id_text.getText().length() == 0) {
-                    Toast.makeText(SettingsActivity.this, R.string.no_self_instance_id, Toast.LENGTH_LONG).show();
-                }
-                if (self_base_instance_id_text.getText().length() == 0) {
-                    Toast.makeText(SettingsActivity.this, R.string.no_self_base_instance_id, Toast.LENGTH_LONG).show();
-                }
-                if (opponent_instance_id_text.getText().length() == 0) {
-                    Toast.makeText(SettingsActivity.this, R.string.no_opponent_instance_id, Toast.LENGTH_LONG).show();
-                }
-                if (opponent_base_instance_id_text.getText().length() == 0) {
-                    Toast.makeText(SettingsActivity.this, R.string.no_opponent_base_instance_id, Toast.LENGTH_LONG).show();
-                }
                 SharedPreferences sharedPref = getSharedPreferences(Constants.SHARED_PREFERENCE, MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPref.edit();
 

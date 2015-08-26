@@ -1,14 +1,11 @@
 package com.example.dinghongfei.strangersgame;
 
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothManager;
 import android.bluetooth.le.BluetoothLeScanner;
 import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanFilter;
 import android.bluetooth.le.ScanRecord;
 import android.bluetooth.le.ScanResult;
 import android.bluetooth.le.ScanSettings;
-import android.content.Context;
 import android.os.ParcelUuid;
 import android.util.Log;
 
@@ -37,25 +34,12 @@ public class Scanner {
     private List<ScanFilter> scanFilters;
     private ScanCallback scanCallback;
 
-    private List<String> instances_to_track;
-
     private Map<String /* device address */, Beacon> deviceToBeaconMap = new HashMap<>();
 
-    public boolean Init(Context application_context, List<String> ids) {
-        BluetoothManager manager = (BluetoothManager) application_context
-                .getSystemService(Context.BLUETOOTH_SERVICE);
-        BluetoothAdapter btAdapter = manager.getAdapter();
-        instances_to_track = new ArrayList<>();
-        for (String instance_id : ids) {
-            instances_to_track.add(instance_id);
-        }
-        if (btAdapter != null && btAdapter.isEnabled()) {
-            scanner = btAdapter.getBluetoothLeScanner();
-            scanFilters = new ArrayList<>();
-            scanFilters.add(new ScanFilter.Builder().setServiceUuid(EDDYSTONE_SERVICE_UUID).build());
-            return true;
-        }
-        return false;
+    public Scanner(BluetoothLeScanner scanner) {
+        this.scanner = scanner;
+        scanFilters = new ArrayList<>();
+        scanFilters.add(new ScanFilter.Builder().setServiceUuid(EDDYSTONE_SERVICE_UUID).build());
     }
 
     public void Start(final ScannerCallback callback) {
@@ -78,7 +62,7 @@ public class Scanner {
                     }
 
                     byte[] serviceData = scanRecord.getServiceData(EDDYSTONE_SERVICE_UUID);
-                    Log.v(TAG, deviceAddress + " " + Utils.toHexString(serviceData));
+//                    Log.v(TAG, deviceAddress + " " + Utils.toHexString(serviceData));
                     validateServiceData(deviceAddress, serviceData);
 
                     beacon = deviceToBeaconMap.get(deviceAddress);
@@ -121,13 +105,6 @@ public class Scanner {
     public void Stop() {
         if (scanner != null) {
             scanner.stopScan(scanCallback);
-        }
-    }
-
-    public void SetInstancesToTrack(ArrayList<String> instance_ids) {
-        instances_to_track.clear();
-        for (String id : instance_ids) {
-            instances_to_track.add(id);
         }
     }
 

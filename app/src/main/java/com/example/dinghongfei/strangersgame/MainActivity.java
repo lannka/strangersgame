@@ -11,7 +11,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Vibrator;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,33 +18,31 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 public class MainActivity extends Activity {
 
   private static final int REQUEST_ENABLE_BLUETOOTH = 1;
+  private static final int START_NEW_GAME = 2;
 
   private Scanner scanner;
   private Advertiser advertiser;
   private Button settings_button;
-  private String self_id;
-  private String self_base_id;
-  private String opponent_id;
-  private String opponent_base_id;
-  private Vibrator vibrator;
+  private GameController gameController;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
-    vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+    gameController = new GameController(this);
     init();
     settings_button = (Button)findViewById(R.id.settingsButton);
     settings_button.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        Intent i = new Intent(MainActivity.this, SettingsActivity.class);
-        startActivityForResult(i, 0);
+        Intent i = new Intent(MainActivity.this, NewGameActivity.class);
+        startActivityForResult(i, START_NEW_GAME);
       }
     });
   }
@@ -75,70 +72,22 @@ public class MainActivity extends Activity {
   @Override
   protected void onActivityResult(int requestCode, int resultCode, Intent data) {
     super.onActivityResult(requestCode, resultCode, data);
-    if (requestCode == REQUEST_ENABLE_BLUETOOTH) {
-      if (resultCode == Activity.RESULT_OK) {
-        init();
-      } else {
-        finish();
-      }
-    } else {
-      if (resultCode == Activity.RESULT_OK) {
-        SharedPreferences sharedPref = getSharedPreferences(Constants.SHARED_PREFERENCE, MODE_PRIVATE);
-        String text = sharedPref.getString(getString(R.string.self_instance_id), "");
-        self_id = Utils.toInstanceId(text);
-        text = sharedPref.getString(getString(R.string.self_base_instance_id), "");
-        self_base_id = Utils.toInstanceId(text);
-        text = sharedPref.getString(getString(R.string.opponent_instance_id), "");
-        opponent_id = Utils.toInstanceId(text);
-        text = sharedPref.getString(getString(R.string.opponent_base_instance_id), "");
-        opponent_base_id = Utils.toInstanceId(text);
-        if (scanner != null) {
-          ArrayList<String> instances_to_track = new ArrayList<>();
-          instances_to_track.add(self_base_id);
-          instances_to_track.add(opponent_id);
-          instances_to_track.add(opponent_base_id);
-          scanner.SetInstancesToTrack(instances_to_track);
+    switch (requestCode) {
+      case REQUEST_ENABLE_BLUETOOTH:
+        if (resultCode == Activity.RESULT_OK) {
+          init();
+        } else {
+          finish();
         }
-        if (advertiser != null) {
-          advertiser.stopAdvertising(new AdvertiseCallback() {
-            @Override
-            public void onStartSuccess(AdvertiseSettings settingsInEffect) {
-              super.onStartSuccess(settingsInEffect);
-              advertiser.startAdvertising(Constants.NAMESPACE, self_id, new AdvertiseCallback() {
-                @Override
-                public void onStartFailure(int errorCode) {
-                  super.onStartFailure(errorCode);
-                  showToast("startAdvertising failed with error " + errorCode);
-                }
-              });
-            }
-
-            @Override
-            public void onStartFailure(int errorCode) {
-              super.onStartFailure(errorCode);
-            }
-          });
+        break;
+      case START_NEW_GAME:
+        if (resultCode == Activity.RESULT_OK) {
+          startGame();
         }
-      }
+        break;
+      default:
+        break;
     }
-  }
-
-  @Override
-  public void onResume() {
-    super.onResume();
-    scanner.Start(new ScannerCallback() {
-      @Override
-      public void onDetected(String instance_id) {
-        Log.d("MainActivity", instance_id);
-        vibrator.vibrate(200);
-      }
-    });
-  }
-
-  @Override
-  public void onPause() {
-    super.onPause();
-    scanner.Stop();
   }
 
   // Checks if Bluetooth advertising is supported on the device and requests enabling if necessary.
@@ -146,7 +95,6 @@ public class MainActivity extends Activity {
     BluetoothManager manager = (BluetoothManager) getApplicationContext().getSystemService(
         Context.BLUETOOTH_SERVICE);
     BluetoothAdapter btAdapter = manager.getAdapter();
-    scanner = new Scanner();
     if (btAdapter == null) {
       showFinishingAlertDialog("Bluetooth Error", "Bluetooth not detected on device");
     } else if (!btAdapter.isEnabled()) {
@@ -155,16 +103,46 @@ public class MainActivity extends Activity {
     } else if (!btAdapter.isMultipleAdvertisementSupported()) {
       showFinishingAlertDialog("Not supported", "BLE advertising not supported on this device");
     } else {
-      scanner.Init(getApplicationContext(), new ArrayList<String>());
+      scanner = new Scanner(btAdapter.getBluetoothLeScanner());
       advertiser = new Advertiser(btAdapter.getBluetoothLeAdvertiser());
-      advertiser.startAdvertising(Constants.NAMESPACE, "112233445566", new AdvertiseCallback() {
+    }
+  }
+
+  private void startGame() {
+    Set<String> enemyIds = new HashSet<>();
+    enemyIds.add(readInstanceId(R.string.opponent_instance_id));
+    gameController.start(
+        readInstanceId(R.string.self_base_instance_id),
+        readInstanceId(R.string.opponent_base_instance_id),
+        enemyIds);
+    if (advertiser != null) {
+      advertiser.stopAdvertising(new AdvertiseCallback() {
+        @Override
+        public void onStartSuccess(AdvertiseSettings settingsInEffect) {
+          super.onStartSuccess(settingsInEffect);
+          String self_id = readInstanceId(R.string.self_instance_id);
+          advertiser.startAdvertising(Constants.NAMESPACE, self_id, new AdvertiseCallback() {
+            @Override
+            public void onStartFailure(int errorCode) {
+              super.onStartFailure(errorCode);
+              showToast("startAdvertising failed with error " + errorCode);
+            }
+          });
+        }
+
         @Override
         public void onStartFailure(int errorCode) {
           super.onStartFailure(errorCode);
-          showToast("startAdvertising failed with error " + errorCode);
         }
       });
     }
+    scanner.Start(new ScannerCallback() {
+      @Override
+      public void onDetected(String instance_id) {
+        Log.d("MainActivity", instance_id);
+        gameController.interrupt(instance_id);
+      }
+    });
   }
 
   // Pops an AlertDialog that quits the app on OK.
@@ -182,5 +160,10 @@ public class MainActivity extends Activity {
 
   private void showToast(String message) {
     Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+  }
+
+  private String readInstanceId(int stringId) {
+    SharedPreferences sharedPref = getSharedPreferences(Constants.SHARED_PREFERENCE, MODE_PRIVATE);
+    return Utils.toInstanceId(sharedPref.getString(getString(stringId), ""));
   }
 }
