@@ -87,13 +87,7 @@ public class Scanner {
                         String namespace = beacon.uidStatus.uidValue.substring(0, 20);
                         String instance_id = beacon.uidStatus.uidValue.substring(20, 32);
                         if (namespace.toLowerCase().equals(Constants.NAMESPACE.toLowerCase())) {
-                            for (String iid : instances_to_track) {
-                                if (instance_id.equals(instance_id.toLowerCase())) {
-                                    ArrayList<String> iids = new ArrayList<>();
-                                    iids.add(instance_id);
-                                    callback.onDetected(iids);
-                                }
-                            }
+                            callback.onDetected(instance_id);
                         }
 
                     }

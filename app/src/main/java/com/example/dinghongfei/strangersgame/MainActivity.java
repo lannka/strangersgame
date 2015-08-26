@@ -11,6 +11,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -31,11 +32,13 @@ public class MainActivity extends Activity {
   private String self_base_id;
   private String opponent_id;
   private String opponent_base_id;
+  private Vibrator vibrator;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
+    vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
     init();
     settings_button = (Button)findViewById(R.id.settingsButton);
     settings_button.setOnClickListener(new View.OnClickListener() {
@@ -125,10 +128,9 @@ public class MainActivity extends Activity {
     super.onResume();
     scanner.Start(new ScannerCallback() {
       @Override
-      public void onDetected(ArrayList<String> instance_ids) {
-        for (String instance_id : instance_ids) {
-          Log.d("MainActivity", instance_id);
-        }
+      public void onDetected(String instance_id) {
+        Log.d("MainActivity", instance_id);
+        vibrator.vibrate(200);
       }
     });
   }

@@ -10,10 +10,8 @@ import java.util.List;
  */
 public abstract class ScannerCallback {
     /**
-     * Callback when there are some scanned instance ids.
-     *
-     * @param instance_ids List of instance ids that are previously scanned.
+     * Callback when there are matched instance ID.
      */
-    public void onDetected(ArrayList<String> instance_ids) {
+    public void onDetected(String instance_id) {
     }
 }

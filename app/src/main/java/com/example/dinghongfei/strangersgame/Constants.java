@@ -33,7 +33,7 @@ class Constants {
     /**
      * Fixed namespace for this application.
      */
-    static final String NAMESPACE = "2F234454F4911BA9FFA6"; //"5A2989A38A4668B4E8AD";
+    static final String NAMESPACE = "AAAABBBBCCCCDDDDEEEE";
 
     /**
      * Key for shared preference.
