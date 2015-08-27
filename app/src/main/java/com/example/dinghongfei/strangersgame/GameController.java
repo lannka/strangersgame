@@ -23,15 +23,16 @@ public class GameController {
     this.myBaseId = myBaseId;
     this.enemyBaseId = enemyBaseId;
     this.enemyIds = enemyIds;
-    Log.d("Start game", myBaseId + ":" + enemyBaseId + ":" + enemyIds);
+    Log.i("Start game", myBaseId + ":" + enemyBaseId + ":" + enemyIds);
   }
 
   public void interrupt(String instanceId) {
     if (instanceId.equals(myBaseId)) {
-      //
+      Log.i("Detected", "My base in range: " + myBaseId);
     } else if (instanceId.equals(enemyBaseId)) {
-
+      Log.i("Detected", "Enemy base in range: " + enemyBaseId);
     } else if (enemyIds.contains(instanceId)) {
+      Log.i("Detected", "Enemy in range: " + instanceId);
       vibrator.vibrate(200);
     }
   }

@@ -39,5 +39,9 @@ class Constants {
      * Key for shared preference.
      */
     static final String SHARED_PREFERENCE = "SHARED_PREFERENCE";
-}
 
+    /**
+     * Signal below the threshold will be ignored (in dBm).
+     */
+    static final int MIN_SIGNAL_STRENGTH = -90;
+}

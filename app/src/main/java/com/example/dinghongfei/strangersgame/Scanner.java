@@ -62,7 +62,6 @@ public class Scanner {
                     }
 
                     byte[] serviceData = scanRecord.getServiceData(EDDYSTONE_SERVICE_UUID);
-//                    Log.v(TAG, deviceAddress + " " + Utils.toHexString(serviceData));
                     validateServiceData(deviceAddress, serviceData);
 
                     beacon = deviceToBeaconMap.get(deviceAddress);
@@ -70,10 +69,11 @@ public class Scanner {
                     if (beacon.uidStatus != null && beacon.uidStatus.uidValue != null) {
                         String namespace = beacon.uidStatus.uidValue.substring(0, 20);
                         String instance_id = beacon.uidStatus.uidValue.substring(20, 32);
-                        if (namespace.toLowerCase().equals(Constants.NAMESPACE.toLowerCase())) {
+                        if (namespace.toLowerCase().equals(Constants.NAMESPACE.toLowerCase())
+                            && (result.getRssi() > Constants.MIN_SIGNAL_STRENGTH)) {
                             callback.onDetected(instance_id);
+                            Log.i(TAG, deviceAddress + " " + Utils.toHexString(serviceData) + " " + result.getRssi());
                         }
-
                     }
                 }
 

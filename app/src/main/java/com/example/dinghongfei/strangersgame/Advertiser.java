@@ -28,14 +28,14 @@ class Advertiser {
       advertiseCallback.onStartFailure(10);
       return;
     }
-    if (!isValidHex(instance, 6)) {
+    if (!isValidHex(instance.toUpperCase(), 6)) {
       advertiseCallback.onStartFailure(10);
       return;
     }
-
+    Log.i("Start advertising: ", instance);
     AdvertiseSettings advertiseSettings = new AdvertiseSettings.Builder()
         .setAdvertiseMode(AdvertiseSettings.ADVERTISE_MODE_LOW_LATENCY)
-        .setTxPowerLevel(AdvertiseSettings.ADVERTISE_TX_POWER_MEDIUM)
+        .setTxPowerLevel(AdvertiseSettings.ADVERTISE_TX_POWER_ULTRA_LOW)
         .setConnectable(true)
         .build();
 

@@ -30,12 +30,21 @@ public class MainActivity extends Activity {
   private Advertiser advertiser;
   private Button settings_button;
   private GameController gameController;
+  private AdvertiseCallback advertiseCallback;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
     gameController = new GameController(this);
+    advertiseCallback = new AdvertiseCallback() {
+      @Override
+      public void onStartFailure(int errorCode) {
+        super.onStartFailure(errorCode);
+        Log.e("StartAdvertising", "failed " + errorCode);
+        showToast("startAdvertising failed with error " + errorCode);
+      }
+    };
     init();
     settings_button = (Button)findViewById(R.id.settingsButton);
     settings_button.setOnClickListener(new View.OnClickListener() {
@@ -116,30 +125,13 @@ public class MainActivity extends Activity {
         readInstanceId(R.string.opponent_base_instance_id),
         enemyIds);
     if (advertiser != null) {
-      advertiser.stopAdvertising(new AdvertiseCallback() {
-        @Override
-        public void onStartSuccess(AdvertiseSettings settingsInEffect) {
-          super.onStartSuccess(settingsInEffect);
-          String self_id = readInstanceId(R.string.self_instance_id);
-          advertiser.startAdvertising(Constants.NAMESPACE, self_id, new AdvertiseCallback() {
-            @Override
-            public void onStartFailure(int errorCode) {
-              super.onStartFailure(errorCode);
-              showToast("startAdvertising failed with error " + errorCode);
-            }
-          });
-        }
-
-        @Override
-        public void onStartFailure(int errorCode) {
-          super.onStartFailure(errorCode);
-        }
-      });
+      advertiser.stopAdvertising(advertiseCallback);
+      String self_id = readInstanceId(R.string.self_instance_id);
+      advertiser.startAdvertising(Constants.NAMESPACE, self_id, advertiseCallback);
     }
     scanner.Start(new ScannerCallback() {
       @Override
       public void onDetected(String instance_id) {
-        Log.d("MainActivity", instance_id);
         gameController.interrupt(instance_id);
       }
     });
