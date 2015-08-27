@@ -22,7 +22,7 @@
         </activity>
         <activity
             android:name=".NewGameActivity"
-            android:label="@string/title_activity_settings" >
+            android:label="@string/title_activity_new_game" >
         </activity>
     </application>
 

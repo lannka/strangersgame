@@ -5,7 +5,6 @@ import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
 import android.bluetooth.le.AdvertiseCallback;
-import android.bluetooth.le.AdvertiseSettings;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -28,7 +27,7 @@ public class MainActivity extends Activity {
 
   private Scanner scanner;
   private Advertiser advertiser;
-  private Button settings_button;
+  private Button newGameButton;
   private GameController gameController;
   private AdvertiseCallback advertiseCallback;
 
@@ -46,8 +45,8 @@ public class MainActivity extends Activity {
       }
     };
     init();
-    settings_button = (Button)findViewById(R.id.settingsButton);
-    settings_button.setOnClickListener(new View.OnClickListener() {
+    newGameButton = (Button)findViewById(R.id.new_game_button);
+    newGameButton.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
         Intent i = new Intent(MainActivity.this, NewGameActivity.class);
@@ -112,7 +111,7 @@ public class MainActivity extends Activity {
     } else if (!btAdapter.isMultipleAdvertisementSupported()) {
       showFinishingAlertDialog("Not supported", "BLE advertising not supported on this device");
     } else {
-      scanner = new Scanner(btAdapter.getBluetoothLeScanner());
+      scanner = new Scanner(this, btAdapter.getBluetoothLeScanner());
       advertiser = new Advertiser(btAdapter.getBluetoothLeAdvertiser());
     }
   }

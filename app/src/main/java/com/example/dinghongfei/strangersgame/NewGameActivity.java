@@ -1,8 +1,6 @@
 package com.example.dinghongfei.strangersgame;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
@@ -10,7 +8,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 public class NewGameActivity extends Activity {
 
@@ -23,7 +20,7 @@ public class NewGameActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_settings);
+        setContentView(R.layout.activity_new_game);
         finish_button = (Button)findViewById(R.id.finishButton);
         self_instance_id_text = (EditText)findViewById(R.id.playerOneText);
         self_base_instance_id_text = (EditText)findViewById(R.id.baseOneText);

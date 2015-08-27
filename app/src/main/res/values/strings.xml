@@ -3,7 +3,7 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
-    <string name="title_activity_settings">SettingsActivity</string>
+    <string name="title_activity_new_game">New game</string>
     <string name="no_self_instance_id">Please specify the id for Player 1</string>
     <string name="no_self_base_instance_id">Please specify the id for Base 1</string>
     <string name="no_opponent_instance_id">Please specify the id for Player 2</string>

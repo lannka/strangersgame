@@ -1,13 +1,17 @@
 package com.example.dinghongfei.strangersgame;
 
+import android.app.Activity;
 import android.bluetooth.le.BluetoothLeScanner;
 import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanFilter;
 import android.bluetooth.le.ScanRecord;
 import android.bluetooth.le.ScanResult;
 import android.bluetooth.le.ScanSettings;
+import android.content.Context;
 import android.os.ParcelUuid;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,14 +33,16 @@ public class Scanner {
     private static final ParcelUuid EDDYSTONE_SERVICE_UUID =
             ParcelUuid.fromString("0000FEAA-0000-1000-8000-00805F9B34FB");
 
-    private BluetoothLeScanner scanner;
+    private final Activity context;
+    private final BluetoothLeScanner scanner;
 
     private List<ScanFilter> scanFilters;
     private ScanCallback scanCallback;
 
     private Map<String /* device address */, Beacon> deviceToBeaconMap = new HashMap<>();
 
-    public Scanner(BluetoothLeScanner scanner) {
+    public Scanner(Activity context, BluetoothLeScanner scanner) {
+        this.context = context;
         this.scanner = scanner;
         scanFilters = new ArrayList<>();
         scanFilters.add(new ScanFilter.Builder().setServiceUuid(EDDYSTONE_SERVICE_UUID).build());
@@ -44,6 +50,8 @@ public class Scanner {
 
     public void Start(final ScannerCallback callback) {
         if (scanner != null) {
+            final TextView logView = (TextView) (context.findViewById(R.id.logView));
+            logView.setMovementMethod(new ScrollingMovementMethod());
             scanCallback = new ScanCallback() {
                 @Override
                 public void onScanResult(int callbackType, ScanResult result) {
@@ -69,10 +77,21 @@ public class Scanner {
                     if (beacon.uidStatus != null && beacon.uidStatus.uidValue != null) {
                         String namespace = beacon.uidStatus.uidValue.substring(0, 20);
                         String instance_id = beacon.uidStatus.uidValue.substring(20, 32);
-                        if (namespace.toLowerCase().equals(Constants.NAMESPACE.toLowerCase())
-                            && (result.getRssi() > Constants.MIN_SIGNAL_STRENGTH)) {
+                        if (namespace.toLowerCase().equals(Constants.NAMESPACE.toLowerCase())){
+//                            && (result.getRssi() > Constants.MIN_SIGNAL_STRENGTH)) {
                             callback.onDetected(instance_id);
+
                             Log.i(TAG, deviceAddress + " " + Utils.toHexString(serviceData) + " " + result.getRssi());
+                            logView.append(instance_id + " " + result.getRssi() + " " + beacon.uidStatus.txPower + "\n");
+                            // find the amount we need to scroll.  This works by
+                            // asking the TextView's internal layout for the position
+                            // of the final line and then subtracting the TextView's height
+                            final int scrollAmount = logView.getLayout().getLineTop(logView.getLineCount()) - logView.getHeight();
+                            // if there is no need to scroll, scrollAmount will be <=0
+                            if (scrollAmount > 0)
+                                logView.scrollTo(0, scrollAmount);
+                            else
+                                logView.scrollTo(0, 0);
                         }
                     }
                 }
