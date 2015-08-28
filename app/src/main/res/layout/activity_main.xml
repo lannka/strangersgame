@@ -11,6 +11,28 @@
         android:layout_height="fill_parent"
         android:scrollbars="vertical"/>
 
+    <ProgressBar
+        android:id="@+id/circle_progress_bar_background"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:indeterminate="false"
+        android:max="100"
+        android:progress="100"
+        android:progressDrawable="@drawable/circle_progress_background" />
+
+    <ProgressBar
+        android:id="@+id/circle_progress_bar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:max="100"
+        android:rotation="-90"
+        android:indeterminate="false"
+        android:progressDrawable="@drawable/circle_progress_foreground" />
+
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -18,5 +40,36 @@
         android:id="@+id/new_game_button"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textColor="@color/red"
+        android:id="@+id/found_enemy_label"
+        android:layout_above="@+id/new_game_button"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/eight_dp"
+        android:text=""
+        android:textSize="@dimen/fourty_eight_dp"
+        android:textColor="@color/red"
+        android:id="@+id/found_enemy_base_label"
+        android:layout_above="@+id/found_enemy_label"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="05:00"
+        android:id="@+id/timer"
+        android:textSize="@dimen/eighty_dp"
+        android:textColor="@color/text_gray"
+        android:layout_alignTop="@+id/logView"
+        android:layout_marginTop="@dimen/eighty_dp"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

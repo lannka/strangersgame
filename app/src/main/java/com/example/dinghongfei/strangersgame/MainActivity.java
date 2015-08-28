@@ -10,11 +10,14 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.HashSet;
@@ -30,6 +33,15 @@ public class MainActivity extends Activity {
   private Button newGameButton;
   private GameController gameController;
   private AdvertiseCallback advertiseCallback;
+  private ProgressBar progressBar;
+  private ProgressBar progressBarBackground;
+  private int progress;
+  private Handler handler;
+  private boolean prev_found_self_base = false;
+  private TextView found_enemy_text;
+  private TextView found_enemy_base_text;
+  private boolean game_started = false;
+  private TextView count_down_timer;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +65,78 @@ public class MainActivity extends Activity {
         startActivityForResult(i, START_NEW_GAME);
       }
     });
+    found_enemy_text = (TextView)findViewById(R.id.found_enemy_label);
+    found_enemy_base_text = (TextView)findViewById(R.id.found_enemy_base_label);
+    progressBar = (ProgressBar)findViewById(R.id.circle_progress_bar);
+    progress = 0;
+    progressBar.setProgress(0);
+    progressBar.setMax(100);
+    progressBar.setVisibility(View.GONE);
+    progressBarBackground = (ProgressBar)findViewById(R.id.circle_progress_bar_background);
+    progressBarBackground.setVisibility(View.GONE);
+    count_down_timer = (TextView)findViewById(R.id.timer);
+    count_down_timer.setText("");
+    handler = new Handler();
+    new Thread(new Runnable() {
+      public void run() {
+        while (true) {
+          try {
+            Thread.sleep(100);
+          } catch (InterruptedException e) {
+            e.printStackTrace();
+          }
+          handler.post(new Runnable() {
+            public void run() {
+              if (!game_started) {
+                return;
+              }
+              if (gameController.found_self_base && !prev_found_self_base) {
+                count_down_timer.setText("");
+                progressBar.setVisibility(View.VISIBLE);
+                progressBarBackground.setVisibility(View.VISIBLE);
+                progress = 0;
+                progressBar.setProgress(0);
+                prev_found_self_base = true;
+              } else if (gameController.found_self_base && prev_found_self_base) {
+                count_down_timer.setText("");
+                if (progress < 100) {
+                  progress += 1;
+                  progressBar.setProgress(progress);
+                } else {
+                  gameController.ResetLife();
+                }
+              } else if (!gameController.found_self_base) {
+                if (prev_found_self_base) {
+                  prev_found_self_base = false;
+                  progressBar.setVisibility(View.GONE);
+                  progressBarBackground.setVisibility(View.GONE);
+                  progressBar.setProgress(0);
+                  progress = 0;
+                }
+                if (gameController.life < 0) {
+                  count_down_timer.setText("Game Over! You Lose!");
+                } else {
+                  int sec = gameController.life % 60;
+                  int min = gameController.life / 60;
+                  count_down_timer.setText(Integer.toString(min) + ":" + Integer.toString(sec));
+                }
+              }
+
+              if (gameController.found_enemy) {
+                found_enemy_text.setText("Enemy Around!!!");
+              } else {
+                found_enemy_text.setText("");
+              }
+              if (gameController.found_enemy_base) {
+                found_enemy_base_text.setText("Found Enemy Base!!!");
+              } else {
+                found_enemy_base_text.setText("");
+              }
+            }
+          });
+        }
+      }
+    }).start();
   }
 
   @Override
@@ -117,6 +201,7 @@ public class MainActivity extends Activity {
   }
 
   private void startGame() {
+    game_started = true;
     Set<String> enemyIds = new HashSet<>();
     enemyIds.add(readInstanceId(R.string.opponent_instance_id));
     gameController.start(
