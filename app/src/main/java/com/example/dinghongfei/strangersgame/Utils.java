@@ -1,5 +1,8 @@
 package com.example.dinghongfei.strangersgame;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
 public class Utils {
     private static final char[] HEX = "0123456789ABCDEF".toCharArray();
 
@@ -23,7 +26,26 @@ public class Utils {
         return true;
     }
 
-    static String toInstanceId(String id) {
-        return Integer.toHexString(id.hashCode()) + "0000";
+    static String toInstanceId(String name) {
+        return md5(name).substring(0, 12);
+    }
+
+    static String md5(String s) {
+        try {
+            // Create MD5 Hash
+            MessageDigest digest = MessageDigest.getInstance("MD5");
+            digest.update(s.getBytes());
+            byte messageDigest[] = digest.digest();
+
+            // Create Hex String
+            StringBuffer hexString = new StringBuffer();
+            for (int i=0; i<messageDigest.length; i++)
+                hexString.append(Integer.toHexString(0xFF & messageDigest[i]));
+            return hexString.toString().toUpperCase();
+
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return "";
     }
 }

@@ -24,6 +24,7 @@ class Advertiser {
   }
 
   public void startAdvertising(String namespace, String instance, AdvertiseCallback advertiseCallback) {
+    Log.i("Start advertising: ", instance);
     if (!isValidHex(namespace, 10)) {
       advertiseCallback.onStartFailure(10);
       return;
@@ -32,7 +33,6 @@ class Advertiser {
       advertiseCallback.onStartFailure(10);
       return;
     }
-    Log.i("Start advertising: ", instance);
     AdvertiseSettings advertiseSettings = new AdvertiseSettings.Builder()
         .setAdvertiseMode(AdvertiseSettings.ADVERTISE_MODE_LOW_LATENCY)
         .setTxPowerLevel(AdvertiseSettings.ADVERTISE_TX_POWER_ULTRA_LOW)

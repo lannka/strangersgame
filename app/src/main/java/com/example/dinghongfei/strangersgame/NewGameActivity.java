@@ -38,16 +38,16 @@ public class NewGameActivity extends Activity {
         opponent_base_instance_id_text.setText(text);
 
         if (self_instance_id_text.getText().length() == 0) {
-          self_instance_id_text.setText("Myself");
+          self_instance_id_text.setText("Tom");
         }
         if (self_base_instance_id_text.getText().length() == 0) {
-          self_base_instance_id_text.setText("MyBase");
+          self_base_instance_id_text.setText("X");
         }
         if (opponent_instance_id_text.getText().length() == 0) {
-          opponent_instance_id_text.setText("EnemyA");
+          opponent_instance_id_text.setText("Jerry");
         }
         if (opponent_base_instance_id_text.getText().length() == 0) {
-          opponent_base_instance_id_text.setText("EnemyBase");
+          opponent_base_instance_id_text.setText("Y");
         }
         finish_button.setOnClickListener(new View.OnClickListener() {
             @Override

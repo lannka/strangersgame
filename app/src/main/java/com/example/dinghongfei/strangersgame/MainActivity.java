@@ -211,6 +211,7 @@ public class MainActivity extends Activity {
       String self_id = readInstanceId(R.string.self_instance_id);
       advertiser.startAdvertising(Constants.NAMESPACE, self_id, advertiseCallback);
     }
+    scanner.Stop();
     scanner.Start(new ScannerCallback() {
       @Override
       public void onDetected(String instance_id) {
