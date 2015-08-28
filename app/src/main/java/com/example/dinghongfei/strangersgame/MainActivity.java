@@ -40,7 +40,6 @@ public class MainActivity extends Activity {
   private boolean prev_found_self_base = false;
   private TextView found_enemy_text;
   private TextView found_enemy_base_text;
-  private boolean game_started = false;
   private TextView count_down_timer;
 
   @Override
@@ -87,7 +86,7 @@ public class MainActivity extends Activity {
           }
           handler.post(new Runnable() {
             public void run() {
-              if (!game_started) {
+              if (!gameController.game_started) {
                 return;
               }
               if (gameController.found_self_base && !prev_found_self_base) {
@@ -201,7 +200,6 @@ public class MainActivity extends Activity {
   }
 
   private void startGame() {
-    game_started = true;
     Set<String> enemyIds = new HashSet<>();
     enemyIds.add(readInstanceId(R.string.opponent_instance_id));
     gameController.start(

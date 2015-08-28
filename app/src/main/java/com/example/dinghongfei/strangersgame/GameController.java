@@ -21,6 +21,7 @@ public class GameController {
   public boolean found_self_base = false;
   public boolean found_enemy_base = false;
   public int life = 300;  // 10 HP = 1 second
+  public boolean game_started = false;
 
   public GameController(Context context) {
     this.context = context;
@@ -34,7 +35,7 @@ public class GameController {
               found_enemy_base = (current_time - last_found_enemy_base_time) < 1000;
               found_self_base = (current_time - last_found_self_base_time) < 1000;
 
-              if (!found_self_base) {
+              if (!found_self_base && game_started) {
                   life -= 1;
               }
 
@@ -55,6 +56,7 @@ public class GameController {
     this.myBaseId = myBaseId;
     this.enemyBaseId = enemyBaseId;
     this.enemyIds = enemyIds;
+    game_started = true;
     Log.i("Start game", myBaseId + ":" + enemyBaseId + ":" + enemyIds);
   }
 
