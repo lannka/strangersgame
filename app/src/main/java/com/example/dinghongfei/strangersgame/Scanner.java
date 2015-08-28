@@ -79,7 +79,7 @@ public class Scanner {
                         String instance_id = beacon.uidStatus.uidValue.substring(20, 32);
                         if (namespace.toLowerCase().equals(Constants.NAMESPACE.toLowerCase())){
 //                            && (result.getRssi() > Constants.MIN_SIGNAL_STRENGTH)) {
-                            callback.onDetected(instance_id);
+                            callback.onDetected(instance_id.toUpperCase());
 
                             Log.i(TAG, deviceAddress + " " + Utils.toHexString(serviceData) + " " + result.getRssi());
                             logView.append(instance_id + " " + result.getRssi() + " " + beacon.uidStatus.txPower + "\n");
