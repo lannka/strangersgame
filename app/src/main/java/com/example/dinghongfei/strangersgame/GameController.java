@@ -5,8 +5,6 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Vibrator;
 import android.util.Log;
-import android.view.View;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.Date;
@@ -15,7 +13,7 @@ import java.util.Set;
 public class GameController {
 
   private static final int RESPONSE_INTERVAL_IN_MS = 500;
-  private static final int FULL_LIFE_IN_SEC = 300;
+  private static final int FULL_LIFE_IN_MS = 300 * 1000;
 
   private final Activity context;
   private String myBaseId;
@@ -27,12 +25,8 @@ public class GameController {
   private boolean found_enemy_base = false;
   private int life;
   private boolean game_started = false;
-
-  private ProgressBar progressBar;
-  private ProgressBar progressBarBackground;
-  private int progress;
+  private LifeCharger lifeCharger;
   private Handler handler;
-  private boolean prev_found_self_base = false;
   private TextView found_enemy_text;
   private TextView found_enemy_base_text;
   private TextView count_down_timer;
@@ -42,6 +36,7 @@ public class GameController {
   public GameController(Activity context) {
     this.context = context;
     vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+    lifeCharger = new LifeCharger(context);
   }
 
   public void start(String myBaseId, String enemyBaseId, Set<String> enemyIds) {
@@ -53,14 +48,8 @@ public class GameController {
 
     found_enemy_text = (TextView) (context.findViewById(R.id.found_enemy_label));
     found_enemy_base_text = (TextView) (context.findViewById(R.id.found_enemy_base_label));
-    progressBar = (ProgressBar) (context.findViewById(R.id.circle_progress_bar));
-    life = FULL_LIFE_IN_SEC;
-    progress = 0;
-    progressBar.setProgress(0);
-    progressBar.setMax(100);
-    progressBar.setVisibility(View.GONE);
-    progressBarBackground = (ProgressBar) (context.findViewById(R.id.circle_progress_bar_background));
-    progressBarBackground.setVisibility(View.GONE);
+    life = FULL_LIFE_IN_MS;
+
     count_down_timer = (TextView) (context.findViewById(R.id.timer));
     count_down_timer.setText("");
     handler = new Handler();
@@ -83,37 +72,19 @@ public class GameController {
                 return;
               }
               if (found_self_base) {
-                if (!prev_found_self_base) {
-                  count_down_timer.setText("");
-                  progressBar.setVisibility(View.VISIBLE);
-                  progressBarBackground.setVisibility(View.VISIBLE);
-                  progress = 0;
-                  progressBar.setProgress(0);
-                  prev_found_self_base = true;
-                  found_self_base = false;
-                } else {
-                  count_down_timer.setText("");
-                  found_self_base = false;
-                  if (progress < 100) {
-                    progress += RESPONSE_INTERVAL_IN_MS / 100;
-                    progressBar.setProgress(progress);
-                  } else {
-                    life = FULL_LIFE_IN_SEC;
-                  }
+                count_down_timer.setText("");
+                found_self_base = false;
+                if (lifeCharger.charge(RESPONSE_INTERVAL_IN_MS)) {
+                  life = FULL_LIFE_IN_MS;
                 }
               } else {
-                if (prev_found_self_base) {
-                  prev_found_self_base = false;
-                  progressBar.setVisibility(View.GONE);
-                  progressBarBackground.setVisibility(View.GONE);
-                  progressBar.setProgress(0);
-                  progress = 0;
-                }
-                if (life < 0) {
+                life -= RESPONSE_INTERVAL_IN_MS;
+                lifeCharger.stop();
+                if (life <= 0) {
                   count_down_timer.setText("Game Over! You Lose!");
                 } else {
-                  int sec = life % 60;
-                  int min = life / 60;
+                  int sec = life / 1000 % 60;
+                  int min = life / 1000 / 60;
                   count_down_timer.setText(Integer.toString(min) + ":" + Integer.toString(sec));
                 }
               }
