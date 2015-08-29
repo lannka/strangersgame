@@ -12,4 +12,6 @@
     <string name="self_base_instance_id">SELF_BASE_ID</string>
     <string name="opponent_instance_id">OPPONENT_ID</string>
     <string name="opponent_base_instance_id">OPPONENT_BASE_ID</string>
+    <string name="team_y">Join Y</string>
+    <string name="team_x">Join X</string>
 </resources>
