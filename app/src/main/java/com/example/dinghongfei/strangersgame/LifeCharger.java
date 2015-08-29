@@ -22,16 +22,15 @@ public class LifeCharger {
     progressBarBackground.setVisibility(View.GONE);
   }
 
+  /**
+   * @return true if charging is completed.
+   */
   public boolean charge(int milliSec) {
     progress += milliSec / 100;
     progressBar.setVisibility(View.VISIBLE);
     progressBarBackground.setVisibility(View.VISIBLE);
     progressBar.setProgress(progress);
-    if (progress >= 100) {
-      progress = 0;
-      return true;
-    }
-    return false;
+    return progress >= 100;
   }
 
   public void stop() {

@@ -13,7 +13,6 @@ import java.util.Set;
 public class GameController {
 
   private static final int RESPONSE_INTERVAL_IN_MS = 500;
-  private static final int FULL_LIFE_IN_MS = 300 * 1000;
 
   private final Activity context;
   private String myBaseId;
@@ -23,13 +22,11 @@ public class GameController {
   private boolean found_enemy = false;
   private boolean found_self_base = false;
   private boolean found_enemy_base = false;
-  private int life;
   private boolean game_started = false;
   private LifeCharger lifeCharger;
-  private Handler handler;
+  private LifeTimer lifeTimer;
   private TextView found_enemy_text;
   private TextView found_enemy_base_text;
-  private TextView count_down_timer;
 
   private Thread timerThread;
 
@@ -37,6 +34,7 @@ public class GameController {
     this.context = context;
     vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
     lifeCharger = new LifeCharger(context);
+    lifeTimer = new LifeTimer(context);
   }
 
   public void start(String myBaseId, String enemyBaseId, Set<String> enemyIds) {
@@ -48,11 +46,8 @@ public class GameController {
 
     found_enemy_text = (TextView) (context.findViewById(R.id.found_enemy_label));
     found_enemy_base_text = (TextView) (context.findViewById(R.id.found_enemy_base_label));
-    life = FULL_LIFE_IN_MS;
-
-    count_down_timer = (TextView) (context.findViewById(R.id.timer));
-    count_down_timer.setText("");
-    handler = new Handler();
+    lifeTimer.reset();
+    final Handler handler = new Handler();
 
     if (timerThread != null) {
       timerThread.interrupt();
@@ -72,21 +67,13 @@ public class GameController {
                 return;
               }
               if (found_self_base) {
-                count_down_timer.setText("");
                 found_self_base = false;
                 if (lifeCharger.charge(RESPONSE_INTERVAL_IN_MS)) {
-                  life = FULL_LIFE_IN_MS;
+                  lifeTimer.reset();
                 }
               } else {
-                life -= RESPONSE_INTERVAL_IN_MS;
                 lifeCharger.stop();
-                if (life <= 0) {
-                  count_down_timer.setText("Game Over! You Lose!");
-                } else {
-                  int sec = life / 1000 % 60;
-                  int min = life / 1000 / 60;
-                  count_down_timer.setText(Integer.toString(min) + ":" + Integer.toString(sec));
-                }
+                lifeTimer.countDown(RESPONSE_INTERVAL_IN_MS);
               }
 
               if (found_enemy) {
