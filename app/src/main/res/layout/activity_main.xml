@@ -20,7 +20,8 @@
         android:indeterminate="false"
         android:max="100"
         android:progress="100"
-        android:progressDrawable="@drawable/circle_progress_background" />
+        android:progressDrawable="@drawable/circle_progress_background"
+        android:visibility="gone"/>
 
     <ProgressBar
         android:id="@+id/circle_progress_bar"
@@ -31,7 +32,8 @@
         android:max="100"
         android:rotation="-90"
         android:indeterminate="false"
-        android:progressDrawable="@drawable/circle_progress_foreground" />
+        android:progressDrawable="@drawable/circle_progress_foreground"
+        android:visibility="gone"/>
 
     <Button
         android:layout_width="wrap_content"
