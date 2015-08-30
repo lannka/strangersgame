@@ -39,6 +39,7 @@ public class GameController {
   }
 
   public void start(String myBaseId, String enemyBaseId, Set<String> enemyIds) {
+    stop();
     this.myBaseId = myBaseId;
     this.enemyBaseId = enemyBaseId;
     this.enemyIds = enemyIds;
@@ -51,10 +52,6 @@ public class GameController {
     lifeTimer.setVisible(true);
     final Handler handler = new Handler();
 
-    if (timerThread != null) {
-      timerThread.interrupt();
-      timerThread = null;
-    }
     timerThread = new Thread(new Runnable() {
       public void run() {
         while (!Thread.currentThread().isInterrupted()) {
@@ -111,5 +108,13 @@ public class GameController {
       Log.i("Detected", "Enemy in range: " + instanceId + "at time: " + date.getTime());
       vibrator.vibrate(200);
     }
+  }
+
+  public void stop() {
+    if (timerThread != null) {
+      timerThread.interrupt();
+      timerThread = null;
+    }
+    lifeTimer.setVisible(false);
   }
 }

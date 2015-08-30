@@ -29,6 +29,8 @@ public class MainActivity extends Activity {
   private Scanner scanner;
   private Advertiser advertiser;
   private Button newGameButton;
+  private Button quitGameButton;
+
   private GameController gameController;
   private AdvertiseCallback advertiseCallback;
 
@@ -55,7 +57,16 @@ public class MainActivity extends Activity {
         startActivityForResult(i, START_NEW_GAME);
       }
     });
-
+    quitGameButton = (Button)findViewById(R.id.quit_button);
+    quitGameButton.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/PoiretOne-Regular.ttf"));
+    quitGameButton.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        quitGame();
+      }
+    });
+    newGameButton.setVisibility(View.VISIBLE);
+    quitGameButton.setVisibility(View.GONE);
   }
 
   @Override
@@ -116,6 +127,14 @@ public class MainActivity extends Activity {
         gameController.interrupt(instance_id);
       }
     });
+    newGameButton.setVisibility(View.GONE);
+    quitGameButton.setVisibility(View.VISIBLE);
+  }
+
+  private void quitGame() {
+    gameController.stop();
+    newGameButton.setVisibility(View.VISIBLE);
+    quitGameButton.setVisibility(View.GONE);
   }
 
   // Pops an AlertDialog that quits the app on OK.
