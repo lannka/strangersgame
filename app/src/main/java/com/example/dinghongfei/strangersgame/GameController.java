@@ -94,7 +94,9 @@ public class GameController {
                   messageLabel.setText("Recovering...");
                 } else {
                   lifeCharger.stop();
-                  lifeTimer.countDown(RESPONSE_INTERVAL_IN_MS);
+                  if (lifeTimer.countDown(RESPONSE_INTERVAL_IN_MS)) {
+                    imageView.setImageResource(R.drawable.gameover);
+                  }
                 }
 
                 if (found_enemy) {
@@ -125,7 +127,7 @@ public class GameController {
     } else if (enemyIds.contains(instanceId)) {
       found_enemy = true;
       Log.i("Detected", "Enemy in range: " + instanceId + "at time: " + date.getTime());
-      vibrator.vibrate(200);
+//      vibrator.vibrate(200);
     }
   }
 

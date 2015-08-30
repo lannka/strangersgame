@@ -10,7 +10,7 @@ import android.widget.TextView;
  */
 public class LifeTimer {
 
-  private static final int FULL_LIFE_IN_MS = 300 * 1000;
+  private static final int FULL_LIFE_IN_MS = 10 * 1000;
   private TextView countDownTimerTextView;
   private int lifeInMs;
 
