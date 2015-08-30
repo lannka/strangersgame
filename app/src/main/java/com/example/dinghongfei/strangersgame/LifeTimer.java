@@ -2,6 +2,7 @@ package com.example.dinghongfei.strangersgame;
 
 import android.app.Activity;
 import android.graphics.Typeface;
+import android.view.View;
 import android.widget.TextView;
 
 /**
@@ -18,6 +19,10 @@ public class LifeTimer {
     countDownTimerTextView.setTypeface(
         Typeface.createFromAsset(context.getAssets(), "fonts/PoiretOne-Regular.ttf"));
     reset();
+  }
+
+  public void setVisible(boolean visible) {
+    countDownTimerTextView.setVisibility(visible ? View.VISIBLE : View.GONE);
   }
 
   /**

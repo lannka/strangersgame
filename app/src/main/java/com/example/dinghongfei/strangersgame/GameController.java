@@ -35,6 +35,7 @@ public class GameController {
     vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
     lifeCharger = new LifeCharger(context);
     lifeTimer = new LifeTimer(context);
+    lifeTimer.setVisible(false);
   }
 
   public void start(String myBaseId, String enemyBaseId, Set<String> enemyIds) {
@@ -47,6 +48,7 @@ public class GameController {
     found_enemy_text = (TextView) (context.findViewById(R.id.found_enemy_label));
     found_enemy_base_text = (TextView) (context.findViewById(R.id.found_enemy_base_label));
     lifeTimer.reset();
+    lifeTimer.setVisible(true);
     final Handler handler = new Handler();
 
     if (timerThread != null) {
