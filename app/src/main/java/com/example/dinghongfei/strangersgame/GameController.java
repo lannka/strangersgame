@@ -23,7 +23,7 @@ public class GameController {
   private boolean found_enemy = false;
   private boolean found_self_base = false;
   private boolean found_enemy_base = false;
-  private boolean game_started = false;
+  private volatile boolean game_started = false;
   private LifeCharger lifeCharger;
   private LifeTimer lifeTimer;
   private TextView messageLabel;
@@ -42,7 +42,7 @@ public class GameController {
   }
 
   public void start(String myBaseId, String enemyBaseId, Set<String> enemyIds) {
-    stop();
+    if (game_started) throw new RuntimeException("Game already started!");
     this.myBaseId = myBaseId;
     this.enemyBaseId = enemyBaseId;
     this.enemyIds = enemyIds;
@@ -53,49 +53,54 @@ public class GameController {
     lifeTimer.setVisible(true);
     final Handler handler = new Handler();
 
-    timerThread = new Thread(new Runnable() {
-      public void run() {
-        while (!Thread.currentThread().isInterrupted()) {
-          try {
-            Thread.sleep(RESPONSE_INTERVAL_IN_MS);
-          } catch (InterruptedException e) {
-            e.printStackTrace();
-          }
-          handler.post(new Runnable() {
-            public void run() {
-              if (!game_started) {
-                return;
-              }
-
-              if (!found_self_base && !found_enemy && !found_enemy_base) {
-                messageLabel.setText("");
-              }
-
-              if (found_self_base) {
-                found_self_base = false;
-                if (lifeCharger.charge(RESPONSE_INTERVAL_IN_MS)) {
-                  lifeTimer.reset();
-                }
-                messageLabel.setText("Recovering...");
-              } else {
-                lifeCharger.stop();
-                lifeTimer.countDown(RESPONSE_INTERVAL_IN_MS);
-              }
-
-              if (found_enemy) {
-                messageLabel.setText("Enemy Around!!!");
-                found_enemy = false;
-              }
-              if (found_enemy_base) {
-                messageLabel.setText("Found Enemy Base!!!");
-                found_enemy_base = false;
-              }
+    if (timerThread == null) {
+      timerThread = new Thread(new Runnable() {
+        public void run() {
+          while (true) {
+            if (!game_started) {
+              continue;
             }
-          });
+            try {
+              Thread.sleep(RESPONSE_INTERVAL_IN_MS);
+            } catch (InterruptedException e) {
+              e.printStackTrace();
+            }
+            handler.post(new Runnable() {
+              public void run() {
+                if (!game_started) {
+                  return;
+                }
+
+                if (!found_self_base && !found_enemy && !found_enemy_base) {
+                  messageLabel.setText("");
+                }
+
+                if (found_self_base) {
+                  found_self_base = false;
+                  if (lifeCharger.charge(RESPONSE_INTERVAL_IN_MS)) {
+                    lifeTimer.reset();
+                  }
+                  messageLabel.setText("Recovering...");
+                } else {
+                  lifeCharger.stop();
+                  lifeTimer.countDown(RESPONSE_INTERVAL_IN_MS);
+                }
+
+                if (found_enemy) {
+                  messageLabel.setText("Enemy Around!!!");
+                  found_enemy = false;
+                }
+                if (found_enemy_base) {
+                  messageLabel.setText("Found Enemy Base!!!");
+                  found_enemy_base = false;
+                }
+              }
+            });
+          }
         }
-      }
-    });
-    timerThread.start();
+      });
+      timerThread.start();
+    }
   }
 
   public void interrupt(String instanceId) {
@@ -114,10 +119,6 @@ public class GameController {
   }
 
   public void stop() {
-    if (timerThread != null) {
-      timerThread.interrupt();
-      timerThread = null;
-    }
     game_started = false;
     lifeTimer.setVisible(false);
     lifeCharger.stop();
