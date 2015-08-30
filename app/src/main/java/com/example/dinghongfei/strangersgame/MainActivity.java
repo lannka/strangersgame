@@ -12,10 +12,9 @@ import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.HashSet;
@@ -132,9 +131,13 @@ public class MainActivity extends Activity {
   }
 
   private void quitGame() {
+    advertiser.stopAdvertising(advertiseCallback);
+    scanner.Stop();
     gameController.stop();
     newGameButton.setVisibility(View.VISIBLE);
     quitGameButton.setVisibility(View.GONE);
+    TextView logView = (TextView) (findViewById(R.id.logView));
+    logView.setText("");
   }
 
   // Pops an AlertDialog that quits the app on OK.

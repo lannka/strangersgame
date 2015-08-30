@@ -2,6 +2,7 @@ package com.example.dinghongfei.strangersgame;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Typeface;
 import android.os.Handler;
 import android.os.Vibrator;
 import android.util.Log;
@@ -25,13 +26,15 @@ public class GameController {
   private boolean game_started = false;
   private LifeCharger lifeCharger;
   private LifeTimer lifeTimer;
-  private TextView found_enemy_text;
-  private TextView found_enemy_base_text;
+  private TextView messageLabel;
 
   private Thread timerThread;
 
   public GameController(Activity context) {
     this.context = context;
+    messageLabel = (TextView) (context.findViewById(R.id.message_label));
+    messageLabel.setTypeface(
+        Typeface.createFromAsset(context.getAssets(), "fonts/PoiretOne-Regular.ttf"));
     vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
     lifeCharger = new LifeCharger(context);
     lifeTimer = new LifeTimer(context);
@@ -46,8 +49,6 @@ public class GameController {
     game_started = true;
     Log.i("Start game", myBaseId + ":" + enemyBaseId + ":" + enemyIds);
 
-    found_enemy_text = (TextView) (context.findViewById(R.id.found_enemy_label));
-    found_enemy_base_text = (TextView) (context.findViewById(R.id.found_enemy_base_label));
     lifeTimer.reset();
     lifeTimer.setVisible(true);
     final Handler handler = new Handler();
@@ -65,27 +66,29 @@ public class GameController {
               if (!game_started) {
                 return;
               }
+
+              if (!found_self_base && !found_enemy && !found_enemy_base) {
+                messageLabel.setText("");
+              }
+
               if (found_self_base) {
                 found_self_base = false;
                 if (lifeCharger.charge(RESPONSE_INTERVAL_IN_MS)) {
                   lifeTimer.reset();
                 }
+                messageLabel.setText("Recovering...");
               } else {
                 lifeCharger.stop();
                 lifeTimer.countDown(RESPONSE_INTERVAL_IN_MS);
               }
 
               if (found_enemy) {
-                found_enemy_text.setText("Enemy Around!!!");
+                messageLabel.setText("Enemy Around!!!");
                 found_enemy = false;
-              } else {
-                found_enemy_text.setText("");
               }
               if (found_enemy_base) {
-                found_enemy_base_text.setText("Found Enemy Base!!!");
+                messageLabel.setText("Found Enemy Base!!!");
                 found_enemy_base = false;
-              } else {
-                found_enemy_base_text.setText("");
               }
             }
           });
@@ -115,6 +118,9 @@ public class GameController {
       timerThread.interrupt();
       timerThread = null;
     }
+    game_started = false;
     lifeTimer.setVisible(false);
+    lifeCharger.stop();
+    messageLabel.setText("");
   }
 }

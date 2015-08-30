@@ -17,6 +17,7 @@
         android:id="@+id/logView"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
+        android:textColor="@color/light_gray"
         android:scrollbars="vertical"/>
 
     <TextView
@@ -81,21 +82,11 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text=""
         android:textColor="@color/red"
-        android:id="@+id/found_enemy_label"
+        android:id="@+id/message_label"
+        android:textSize="@dimen/thirty_dp"
         android:layout_above="@+id/new_game_button"
-        android:layout_centerHorizontal="true" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/eight_dp"
-        android:text=""
-        android:textSize="@dimen/fourty_eight_dp"
-        android:textColor="@color/red"
-        android:id="@+id/found_enemy_base_label"
-        android:layout_above="@+id/found_enemy_label"
+        android:layout_below="@+id/main_image_view"
         android:layout_centerHorizontal="true" />
 
 </RelativeLayout>
