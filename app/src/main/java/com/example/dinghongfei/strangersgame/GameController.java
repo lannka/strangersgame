@@ -6,6 +6,7 @@ import android.graphics.Typeface;
 import android.os.Handler;
 import android.os.Vibrator;
 import android.util.Log;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.Date;
@@ -26,12 +27,14 @@ public class GameController {
   private volatile boolean game_started = false;
   private LifeCharger lifeCharger;
   private LifeTimer lifeTimer;
+  private ImageView imageView;
   private TextView messageLabel;
 
   private Thread timerThread;
 
   public GameController(Activity context) {
     this.context = context;
+    imageView = (ImageView) (context.findViewById(R.id.main_image_view));
     messageLabel = (TextView) (context.findViewById(R.id.message_label));
     messageLabel.setTypeface(
         Typeface.createFromAsset(context.getAssets(), "fonts/PoiretOne-Regular.ttf"));
@@ -69,6 +72,14 @@ public class GameController {
               public void run() {
                 if (!game_started) {
                   return;
+                }
+
+                if (found_enemy_base) {
+                  imageView.setImageResource(R.drawable.base);
+                } else if (found_enemy) {
+                  imageView.setImageResource(R.drawable.enemy);
+                } else {
+                  imageView.setImageResource(R.drawable.detective);
                 }
 
                 if (!found_self_base && !found_enemy && !found_enemy_base) {
