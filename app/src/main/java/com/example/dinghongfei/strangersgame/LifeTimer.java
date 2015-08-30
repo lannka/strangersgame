@@ -10,7 +10,7 @@ import android.widget.TextView;
  */
 public class LifeTimer {
 
-  private static final int FULL_LIFE_IN_MS = 10 * 1000;
+  private static final int FULL_LIFE_IN_MS = 300 * 1000;
   private TextView countDownTimerTextView;
   private int lifeInMs;
 
@@ -31,7 +31,7 @@ public class LifeTimer {
   public boolean countDown(int timeInMs) {
     lifeInMs -= timeInMs;
     if (lifeInMs <= 0) {
-      countDownTimerTextView.setText("Game Over");
+      countDownTimerTextView.setText("Game over");
       return true;
     } else {
       print();

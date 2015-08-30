@@ -25,6 +25,7 @@ public class GameController {
   private boolean found_self_base = false;
   private boolean found_enemy_base = false;
   private volatile boolean game_started = false;
+  private volatile boolean isGameOver;
   private LifeCharger lifeCharger;
   private LifeTimer lifeTimer;
   private ImageView imageView;
@@ -50,6 +51,7 @@ public class GameController {
     this.enemyBaseId = enemyBaseId;
     this.enemyIds = enemyIds;
     game_started = true;
+    isGameOver = false;
     Log.i("Start game", myBaseId + ":" + enemyBaseId + ":" + enemyIds);
 
     lifeTimer.reset();
@@ -70,7 +72,7 @@ public class GameController {
             }
             handler.post(new Runnable() {
               public void run() {
-                if (!game_started) {
+                if (!game_started || isGameOver) {
                   return;
                 }
 
@@ -96,6 +98,8 @@ public class GameController {
                   lifeCharger.stop();
                   if (lifeTimer.countDown(RESPONSE_INTERVAL_IN_MS)) {
                     imageView.setImageResource(R.drawable.gameover);
+                    messageLabel.setText("");
+                    isGameOver = true;
                   }
                 }
 
