@@ -23,8 +23,19 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:id="@+id/title_text_view"
+        android:text="Strangers' Game"
+        android:textSize="@dimen/fourty_dp"
+        android:textColor="@color/red"
+        android:layout_above="@id/main_image_view"
+        android:layout_marginBottom="@dimen/fourty_dp"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:id="@+id/timer"
-        android:textSize="@dimen/sixty_dp"
+        android:textSize="@dimen/eighty_dp"
         android:textColor="@color/red"
         android:layout_alignTop="@+id/logView"
         android:layout_marginTop="@dimen/eighty_dp"
@@ -57,13 +68,25 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="Help"
+        android:id="@+id/help_button"
+        android:textColor="@color/red"
+        android:background="@color/transparent"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="@dimen/eighty_dp"
+        android:layout_centerHorizontal="true"
+        android:textSize="@dimen/thirty_six_dp"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:text="New game"
         android:id="@+id/new_game_button"
         android:textColor="@color/red"
         android:background="@color/transparent"
-        android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="@dimen/one_hundred_dp"
+        android:layout_above="@id/help_button"
+        android:layout_marginBottom="@dimen/twenty_dp"
         android:textSize="@dimen/thirty_six_dp"/>
 
     <Button

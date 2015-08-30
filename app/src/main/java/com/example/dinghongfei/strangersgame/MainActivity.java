@@ -10,6 +10,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -27,7 +28,9 @@ public class MainActivity extends Activity {
 
   private Scanner scanner;
   private Advertiser advertiser;
+  private TextView titleTextView;
   private Button newGameButton;
+  private Button helpButton;
   private Button quitGameButton;
 
   private GameController gameController;
@@ -47,13 +50,27 @@ public class MainActivity extends Activity {
       }
     };
     init();
+    Typeface typeface = Typeface.createFromAsset(getAssets(), "fonts/PoiretOne-Regular.ttf");
+    titleTextView = (TextView) findViewById(R.id.title_text_view);
+    titleTextView.setTypeface(typeface);
     newGameButton = (Button)findViewById(R.id.new_game_button);
-    newGameButton.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/PoiretOne-Regular.ttf"));
+    newGameButton.setTypeface(typeface);
     newGameButton.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
         Intent i = new Intent(MainActivity.this, NewGameActivity.class);
         startActivityForResult(i, START_NEW_GAME);
+      }
+    });
+    helpButton = (Button)findViewById(R.id.help_button);
+    helpButton.setTypeface(typeface);
+    helpButton.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        String url = "http://go/strangersgame";
+        Intent i = new Intent(Intent.ACTION_VIEW);
+        i.setData(Uri.parse(url));
+        startActivity(i);
       }
     });
     quitGameButton = (Button)findViewById(R.id.quit_button);
@@ -64,7 +81,6 @@ public class MainActivity extends Activity {
         quitGame();
       }
     });
-    newGameButton.setVisibility(View.VISIBLE);
     quitGameButton.setVisibility(View.GONE);
   }
 
@@ -126,7 +142,9 @@ public class MainActivity extends Activity {
         gameController.interrupt(instance_id);
       }
     });
+    titleTextView.setVisibility(View.GONE);
     newGameButton.setVisibility(View.GONE);
+    helpButton.setVisibility(View.GONE);
     quitGameButton.setVisibility(View.VISIBLE);
   }
 
@@ -134,7 +152,9 @@ public class MainActivity extends Activity {
     advertiser.stopAdvertising(advertiseCallback);
     scanner.Stop();
     gameController.stop();
+    titleTextView.setVisibility(View.VISIBLE);
     newGameButton.setVisibility(View.VISIBLE);
+    helpButton.setVisibility(View.VISIBLE);
     quitGameButton.setVisibility(View.GONE);
     TextView logView = (TextView) (findViewById(R.id.logView));
     logView.setText("");
