@@ -31,7 +31,7 @@ public class LifeTimer {
   public boolean countDown(int timeInMs) {
     lifeInMs -= timeInMs;
     if (lifeInMs <= 0) {
-      countDownTimerTextView.setText("Game Over! You Lose!");
+      countDownTimerTextView.setText("Game Over");
       return true;
     } else {
       print();
