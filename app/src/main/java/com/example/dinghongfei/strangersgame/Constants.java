@@ -1,5 +1,7 @@
 package com.example.dinghongfei.strangersgame;
 
+import android.graphics.Typeface;
+
 class Constants {
 
     private Constants() {

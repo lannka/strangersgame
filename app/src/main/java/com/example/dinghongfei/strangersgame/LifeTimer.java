@@ -1,6 +1,7 @@
 package com.example.dinghongfei.strangersgame;
 
 import android.app.Activity;
+import android.graphics.Typeface;
 import android.widget.TextView;
 
 /**
@@ -14,6 +15,8 @@ public class LifeTimer {
 
   public LifeTimer(Activity context) {
     countDownTimerTextView = (TextView) (context.findViewById(R.id.timer));
+    countDownTimerTextView.setTypeface(
+        Typeface.createFromAsset(context.getAssets(), "fonts/PoiretOne-Regular.ttf"));
     reset();
   }
 
