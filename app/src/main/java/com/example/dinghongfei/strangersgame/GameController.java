@@ -133,6 +133,7 @@ public class GameController {
     game_started = false;
     lifeTimer.setVisible(false);
     lifeCharger.stop();
+    imageView.setImageResource(R.drawable.detective);
     messageLabel.setText("");
   }
 }

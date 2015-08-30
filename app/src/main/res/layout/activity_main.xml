@@ -63,7 +63,7 @@
         android:background="@color/transparent"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="45dp"
+        android:layout_marginBottom="@dimen/one_hundred_dp"
         android:textSize="@dimen/thirty_six_dp"/>
 
     <Button

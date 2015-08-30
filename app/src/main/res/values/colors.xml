@@ -27,5 +27,6 @@
 
     <color name="black">#ff000000</color>
     <color name="bgcolor">#FBF9E9</color>
+    <color name="blue">#0082FF</color>
 
 </resources>
