@@ -12,6 +12,16 @@
         android:layout_height="fill_parent"
         android:scrollbars="vertical"/>
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/timer"
+        android:textSize="@dimen/sixty_dp"
+        android:textColor="@color/red"
+        android:layout_alignTop="@+id/logView"
+        android:layout_marginTop="@dimen/eighty_dp"
+        android:layout_centerHorizontal="true" />
+
     <ProgressBar
         android:id="@+id/circle_progress_bar_background"
         style="?android:attr/progressBarStyleHorizontal"
@@ -41,8 +51,12 @@
         android:layout_height="wrap_content"
         android:text="New game"
         android:id="@+id/new_game_button"
+        android:textColor="@color/red"
+        android:background="@color/transparent"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="45dp"
+        android:textSize="@dimen/thirty_six_dp"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -64,15 +78,5 @@
         android:layout_above="@+id/found_enemy_label"
         android:layout_centerHorizontal="true" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="05:00"
-        android:id="@+id/timer"
-        android:textSize="@dimen/eighty_dp"
-        android:textColor="@color/text_gray"
-        android:layout_alignTop="@+id/logView"
-        android:layout_marginTop="@dimen/eighty_dp"
-        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

@@ -1,14 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:weightSum="1"
-    android:background="@color/bgcolor">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+                android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                android:paddingTop="@dimen/activity_vertical_margin"
+                android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".NewGameActivity"
+                android:background="@color/bgcolor">
+
+    <TextView
+        android:id="@+id/new_game_title"
+        android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:textSize="@dimen/thirty_six_dp"
+      android:textColor="@color/red"
+      android:text="Join a side"
+      android:layout_marginTop="@dimen/eighty_dp"
+      android:layout_centerHorizontal="true" />
 
     <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:orientation="horizontal">
         <RadioButton android:id="@+id/radio_team_x"
                      android:layout_width="wrap_content"
                      android:layout_height="wrap_content"
@@ -20,16 +34,16 @@
                      android:text="@string/team_y"/>
     </RadioGroup>
 
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_weight="0.14" />
-
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Start"
         android:id="@+id/finishButton"
-        android:layout_gravity="center_horizontal" />
-</LinearLayout>
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center_horizontal"
+        android:textColor="@color/red"
+        android:background="@color/transparent"
+        android:layout_marginBottom="45dp"
+        android:textSize="@dimen/thirty_six_dp"/>
+</RelativeLayout>

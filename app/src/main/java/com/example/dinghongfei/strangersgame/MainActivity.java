@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -46,6 +47,7 @@ public class MainActivity extends Activity {
     };
     init();
     newGameButton = (Button)findViewById(R.id.new_game_button);
+    newGameButton.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/PoiretOne-Regular.ttf"));
     newGameButton.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
