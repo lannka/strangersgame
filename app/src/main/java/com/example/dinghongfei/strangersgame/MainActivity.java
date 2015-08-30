@@ -67,7 +67,7 @@ public class MainActivity extends Activity {
     helpButton.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        String url = "http://go/strangersgame";
+        String url = "http://yoopu.me/blog/strangers-game-rule/?hideNavBar";
         Intent i = new Intent(Intent.ACTION_VIEW);
         i.setData(Uri.parse(url));
         startActivity(i);
